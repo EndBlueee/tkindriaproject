@@ -1,0 +1,267 @@
+@extends('layouts.admin')
+
+@section('title', 'Tambah Pendaftaran')
+
+@section('main')
+
+{{-- Breadcrumb --}}
+<div class="flex items-center gap-2 text-sm text-gray-400 mb-6">
+    <a href="{{ route('admin.pendaftaran.index') }}" class="hover:text-[#0068C4] transition">Pendaftaran</a>
+    <span>/</span>
+    <span class="text-gray-700 font-medium">Tambah</span>
+</div>
+
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Tambah Pendaftaran</h1>
+    <p class="text-sm text-gray-500 mt-1">Pendaftaran manual untuk orang tua yang datang langsung ke sekolah</p>
+</div>
+
+<form method="POST" action="{{ route('admin.pendaftaran.store') }}" enctype="multipart/form-data">
+    @csrf
+
+    <div class="space-y-6">
+
+        {{-- ── Info Pendaftaran ─────────────────────────────────── --}}
+        <div class="bg-white rounded-sm shadow-sm border border-gray-100 p-6">
+            <h2 class="text-base font-semibold text-gray-700 mb-4">Info Pendaftaran</h2>
+            <div class="flex items-center">
+                <label for="gelombang_id" class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                    Gelombang <span class="text-red-500">*</span>
+                </label>
+                <div class="w-full">
+                    <select name="gelombang_id" id="gelombang_id"
+                        class="w-full border {{ $errors->has('gelombang_id') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="">-- Pilih Gelombang --</option>
+                        @foreach ($gelombang as $g)
+                        <option value="{{ $g->id }}" {{ old('gelombang_id') == $g->id ? 'selected' : '' }}>
+                            {{ $g->nama }} — {{ $g->total_biaya_format }}
+                            @if ($g->diskon_persen > 0) (Diskon {{ $g->diskon_persen }}%) @endif
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('gelombang_id')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
+        {{-- ── Data Calon Murid ─────────────────────────────────── --}}
+        <div class="bg-white rounded-sm shadow-sm border border-gray-100 p-6">
+            <h2 class="text-base font-semibold text-gray-700 mb-4">Data Calon Murid</h2>
+
+            <div class="">
+                <div class="flex items-center">
+                    <label for="nama_lengkap" class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Nama Lengkap <span class="text-red-500">*</span>
+                    </label>
+                    <div class="w-full">
+                        <input type="text" name="nama_lengkap" id="nama_lengkap"
+                            value="{{ old('nama_lengkap') }}"
+                            placeholder="Sesuai akta lahir"
+                            class="w-full border {{ $errors->has('nama_lengkap') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        @error('nama_lengkap')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="flex items-center mt-4">
+                    <label for="nama_panggilan" class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Nama Panggilan <span class="text-gray-400 font-normal">(opsional)</span>
+                    </label>
+                    <div class="w-full">
+                        <input type="text" name="nama_panggilan" id="nama_panggilan"
+                            value="{{ old('nama_panggilan') }}"
+                            class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    </div>
+                </div>
+
+                <div class="flex items-center mt-4">
+                    <label class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Jenis Kelamin <span class="text-red-500">*</span>
+                    </label>
+                    <div class="w-full">
+                        <div class="flex gap-6 pt-1">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="jenis_kelamin" value="L"
+                                    {{ old('jenis_kelamin') === 'L' ? 'checked' : '' }}>
+                                <span class="text-sm text-gray-700">Laki-laki</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="jenis_kelamin" value="P"
+                                    {{ old('jenis_kelamin') === 'P' ? 'checked' : '' }}>
+                                <span class="text-sm text-gray-700">Perempuan</span>
+                            </label>
+                        </div>
+                        @error('jenis_kelamin')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="flex items-center mt-4">
+                    <label for="agama" class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Agama <span class="text-red-500">*</span>
+                    </label>
+                    <div class="w-full">
+                        <select name="agama" id="agama"
+                            class="w-full border {{ $errors->has('agama') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            <option value="">-- Pilih Agama --</option>
+                            @foreach (['Islam','Kristen','Katolik','Hindu','Buddha','Konghucu'] as $agama)
+                            <option value="{{ $agama }}" {{ old('agama') === $agama ? 'selected' : '' }}>
+                                {{ $agama }}
+                            </option>
+                            @endforeach
+                        </select>
+                        @error('agama')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="flex items-center mt-4">
+                    <label for="tempat_lahir" class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Tempat Lahir <span class="text-red-500">*</span>
+                    </label>
+                    <div class="w-full">
+                        <input type="text" name="tempat_lahir" id="tempat_lahir"
+                            value="{{ old('tempat_lahir') }}"
+                            placeholder="Kota lahir"
+                            class="w-full border {{ $errors->has('tempat_lahir') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        @error('tempat_lahir')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="flex items-center mt-4">
+                    <label for="tanggal_lahir" class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Tanggal Lahir <span class="text-red-500">*</span>
+                    </label>
+                    <div class="w-full">
+                        <input type="date" name="tanggal_lahir" id="tanggal_lahir"
+                            value="{{ old('tanggal_lahir') }}"
+                            class="w-full border {{ $errors->has('tanggal_lahir') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        @error('tanggal_lahir')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="flex items-center mt-4">
+                    <label for="anak_ke" class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Anak ke <span class="text-gray-400 font-normal">(opsional)</span>
+                    </label>
+                    <div class="w-full">
+                        <input type="number" name="anak_ke" min="1"
+                            value="{{ old('anak_ke') }}"
+                            class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    </div>
+                </div>
+
+                <div class="flex items-center mt-4">
+                    <label for="jumlah_saudara" class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Jumlah Saudara <span class="text-gray-400 font-normal">(opsional)</span>
+                    </label>
+                    <div class="w-full">
+                        <input type="number" name="jumlah_saudara" min="0"
+                            value="{{ old('jumlah_saudara') }}"
+                            class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ── Data Orang Tua ───────────────────────────────────── --}}
+        <div class="bg-white rounded-sm shadow-sm border border-gray-100 p-6">
+            <h2 class="text-base font-semibold text-gray-700 mb-4">Data Orang Tua / Wali</h2>
+
+            <div class="">
+                <div class="flex items-center mt-4">
+                    <label for="nama_ayah" class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">Nama Ayah</label>
+                    <div class="w-full">
+                        <input type="text" name="nama_ayah" value="{{ old('nama_ayah') }}"
+                            placeholder="Nama lengkap ayah"
+                            class="w-full border {{ $errors->has('nama_ayah') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        @error('nama_ayah')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                <div class="flex items-center mt-4">
+                    <label class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">Pekerjaan Ayah</label>
+                    <div class="w-full">
+                        <input type="text" name="pekerjaan_ayah" value="{{ old('pekerjaan_ayah') }}"
+                            class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    </div>
+                </div>
+                <div class="flex items-center mt-4">
+                    <label class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">Nama Ibu</label>
+                    <div class="w-full">
+                        <input type="text" name="nama_ibu" value="{{ old('nama_ibu') }}"
+                            placeholder="Nama lengkap ibu"
+                            class="w-full border {{ $errors->has('nama_ibu') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    </div>
+                </div>
+                <div class="flex items-center mt-4">
+                    <label class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">Pekerjaan Ibu</label>
+                    <div class="w-full">
+                        <input type="text" name="pekerjaan_ibu" value="{{ old('pekerjaan_ibu') }}"
+                            class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    </div>
+                </div>
+                <div class="flex items-center mt-4">
+                    <label class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Nomor HP <span class="text-red-500">*</span>
+                    </label>
+                    <div class="w-full">
+                        <input type="text" name="nomor_hp_ortu" value="{{ old('nomor_hp_ortu') }}"
+                            placeholder="08xxxxxxxxxx"
+                            class="w-full border {{ $errors->has('nomor_hp_ortu') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    </div>
+                    @error('nomor_hp_ortu')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex items-center mt-4">
+                    <label class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Nomor Saudara <span class="text-gray-400 font-normal">(opsional)</span>
+                    </label>
+                    <div class="w-full">
+                        <input type="text" name="nomor_saudara" value="{{ old('nomor_saudara') }}"
+                            class="w-full border border-gray-300 rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    </div>
+                </div>
+                <div class="flex items-center mt-4">
+                    <label class="w-1/3 text-sm font-semibold text-gray-700 mb-1.5">
+                        Alamat <span class="text-red-500">*</span>
+                    </label>
+                    <div class="w-full">
+                        <textarea name="alamat" rows="3"
+                            placeholder="Jalan, RT/RW, Kelurahan, Kecamatan, Kota"
+                            class="w-full border {{ $errors->has('alamat') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">{{ old('alamat') }}</textarea>
+                        @error('alamat')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Tombol --}}
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+            <a href="{{ route('admin.pendaftaran.index') }}"
+                class="text-sm text-gray-600 hover:text-gray-800 px-4 py-2.5 rounded-sm bg-gray-100 hover:bg-gray-200 transition">
+                Kembali
+            </a>
+            <button type="submit"
+                class="bg-[#0068C4] hover:bg-[#005ca3] text-white text-sm font-semibold px-6 py-2.5 rounded-sm transition">
+                Simpan Pendaftaran
+            </button>
+        </div>
+
+    </div>
+</form>
+
+@endsection
