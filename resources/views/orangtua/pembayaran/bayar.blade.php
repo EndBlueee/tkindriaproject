@@ -4,14 +4,7 @@
 
 @section('main')
 
-{{-- Breadcrumb --}}
-<div class="flex items-center gap-2 text-sm text-gray-400 mb-6">
-    <a href="{{ route('orangtua.pendaftaran.detail') }}" class="hover:text-[#0068C4] transition">Detail Pendaftaran</a>
-    <span>/</span>
-    <a href="{{ route('orangtua.pembayaran.index') }}" class="hover:text-[#0068C4] transition">Pembayaran</a>
-    <span>/</span>
-    <span class="text-gray-700 font-medium">Kode Pembayaran</span>
-</div>
+
 
 <div class="mb-6">
     <h1 class="text-2xl font-bold text-gray-800">Kode Pembayaran</h1>

@@ -251,7 +251,7 @@ $tahap === 'murid' ? 'Biodata Calon Murid' :
                 </label>
                 <div class="w-full">
                     <input type="text" name="nomor_hp"
-                        value="{{ old('nomor_hp', $orangTua->nomor_hp ?? '') }}"
+                        value="{{ old('nomor_hp', $orangTua->nomor_hp ?? Auth::user()->nomor_hp) }}"
                         placeholder="08xxxxxxxxxx"
                         class="w-full border {{ $errors->has('nomor_hp') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                     @error('nomor_hp')

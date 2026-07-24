@@ -60,6 +60,12 @@ class AdminPendaftaranController extends Controller
     public function create()
     {
         $tahunAjaran  = TahunAjaran::aktif();
+
+        if (! $tahunAjaran) {
+            return redirect()->route('admin.pendaftaran.index')
+                ->with('error', 'Tidak dapat menambah pendaftaran. Belum ada Tahun Ajaran yang aktif.');
+        }
+
         $gelombang    = $tahunAjaran?->gelombang;
         $persyaratans = PersyaratanDokumen::where('tahun_ajaran_id', $tahunAjaran?->id)
             ->terurut()->get();
@@ -70,6 +76,11 @@ class AdminPendaftaranController extends Controller
     public function store(Request $request)
     {
         $tahunAjaran = TahunAjaran::aktif();
+
+        if (! $tahunAjaran) {
+            return redirect()->route('admin.pendaftaran.index')
+                ->with('error', 'Gagal menyimpan pendaftaran. Belum ada Tahun Ajaran yang aktif.');
+        }
 
         $request->validate([
             // Info pendaftaran
@@ -144,29 +155,6 @@ class AdminPendaftaranController extends Controller
                 'tgl_verifikasi'  => now(),
                 'diproses_oleh'   => auth()->id(),
             ]);
-
-            // 4. Upload dokumen jika ada
-            $persyaratans = PersyaratanDokumen::where('tahun_ajaran_id', $tahunAjaran->id)
-                ->terurut()->get();
-
-            foreach ($persyaratans as $p) {
-                $key = 'dokumen_' . $p->id;
-                if ($request->hasFile($key)) {
-                    $file = $request->file($key);
-                    $path = $file->store('dokumen/' . $pendaftaran->nomor_daftar, 'public');
-
-                    Dokumen::create([
-                        'pendaftaran_id'    => $pendaftaran->id,
-                        'persyaratan_id'    => $p->id,
-                        'nama_file'         => $file->getClientOriginalName(),
-                        'path_file'         => $path,
-                        'tipe_file'         => $file->getClientOriginalExtension(),
-                        'ukuran_file'       => round($file->getSize() / 1024),
-                        'status_verifikasi' => 'diterima',
-                        'uploaded_at'       => now(),
-                    ]);
-                }
-            }
         });
 
         return redirect()->route('admin.pendaftaran.index')
@@ -184,7 +172,9 @@ class AdminPendaftaranController extends Controller
 
     public function update(Request $request, Pendaftaran $pendaftaran)
     {
-        $request->validate([
+        $persyaratans = PersyaratanDokumen::where('tahun_ajaran_id', $pendaftaran->tahun_ajaran_id)->get();
+
+        $rules = [
             // Data calon murid
             'nama_lengkap'   => 'required|string|max:100',
             'nama_panggilan' => 'nullable|string|max:50',
@@ -201,11 +191,24 @@ class AdminPendaftaranController extends Controller
             'nomor_hp_ortu' => 'required|string|max:15',
             'nomor_saudara' => 'nullable|string|max:15',
             'alamat'        => 'required|string',
-        ], [
+        ];
+
+        $messages = [
             'nama_lengkap.required'  => 'Nama lengkap wajib diisi.',
             'nomor_hp_ortu.required' => 'Nomor HP wajib diisi.',
             'alamat.required'        => 'Alamat wajib diisi.',
-        ]);
+        ];
+
+        foreach ($persyaratans as $p) {
+            $key = 'dokumen_' . $p->id;
+            if ($request->hasFile($key)) {
+                $rules[$key] = ['nullable', 'file', 'mimes:' . $p->format_file, 'max:' . $p->maks_ukuran_kb];
+                $messages[$key . '.mimes'] = $p->nama_dokumen . ' harus format ' . $p->format_file_tampil . '.';
+                $messages[$key . '.max'] = $p->nama_dokumen . ' maksimal ' . $p->maks_ukuran_format . '.';
+            }
+        }
+
+        $request->validate($rules, $messages);
 
         if (! $request->nama_ayah && ! $request->nama_ibu) {
             return back()->withErrors([
@@ -237,8 +240,6 @@ class AdminPendaftaranController extends Controller
         ]);
 
         // Update & Upload dokumen jika ada yang dipilih
-        $persyaratans = PersyaratanDokumen::where('tahun_ajaran_id', $pendaftaran->tahun_ajaran_id)->get();
-        
         foreach ($persyaratans as $p) {
             $key = 'dokumen_' . $p->id;
             

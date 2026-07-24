@@ -76,6 +76,22 @@
             </div>
         </div>
 
+        {{-- Batas Pembayaran --}}
+        <div class="mb-6 flex items-center">
+            <label for="batas_pembayaran" class="w-1/3 text-sm font-semibold text-gray-700">
+                Batas Pembayaran <span class="text-red-500">*</span>
+            </label>
+            <div class="w-full">
+                <input type="date" name="batas_pembayaran" id="batas_pembayaran"
+                    value="{{ old('batas_pembayaran', $gelombang->batas_pembayaran->format('Y-m-d')) }}"
+                    class="w-full border {{ $errors->has('batas_pembayaran') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                <p class="text-xs text-gray-400 mt-1">Batas akhir pembayaran untuk pendaftar di gelombang ini.</p>
+                @error('batas_pembayaran')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
 
         {{-- Diskon --}}
         <div class="mb-6 flex items-center">

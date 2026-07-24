@@ -71,6 +71,11 @@ class AdminPembayaranController extends Controller
     {
         $tahunAjaran = TahunAjaran::aktif();
 
+        if (! $tahunAjaran) {
+            return redirect()->route('admin.pembayaran.index')
+                ->with('error', 'Tidak dapat menambah pembayaran. Belum ada Tahun Ajaran yang aktif.');
+        }
+
         $pendaftarans = Pendaftaran::with(['calonMurid', 'gelombang'])
             ->where('tahun_ajaran_id', $tahunAjaran?->id)
             ->where('jalur', 'offline')

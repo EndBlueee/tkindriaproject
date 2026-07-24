@@ -32,6 +32,7 @@
                 <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase ">Nama</th>
                 <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase ">Tanggal Buka</th>
                 <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase ">Tanggal Tutup</th>
+                <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase ">Batas Pembayaran</th>
                 <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase ">Diskon</th>
                 <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase ">Total Bayar</th>
                 <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase ">Status</th>
@@ -47,6 +48,9 @@
                 </td>
                 <td class="px-4 py-3 text-gray-600">
                     {{ $g->tanggal_tutup->translatedFormat('d F Y') }}
+                </td>
+                <td class="px-4 py-3 text-gray-600">
+                    {{ $g->batas_pembayaran->translatedFormat('d F Y') }}
                 </td>
                 <td class="px-4 py-3">
                     @if ($g->diskon_persen > 0)
@@ -98,7 +102,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" class="px-4 py-8 text-center text-gray-400 text-sm">
+                <td colspan="8" class="px-4 py-8 text-center text-gray-400 text-sm">
                     Belum ada gelombang.
                     @if ($tahunAjaran)
                     <a href="{{ route('admin.gelombang.create') }}" class="text-[#0068C4] hover:underline">Tambah sekarang</a>

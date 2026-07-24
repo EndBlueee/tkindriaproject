@@ -19,14 +19,12 @@ class Pendaftaran extends Model
         'catatan_admin',
         'tgl_submit',
         'tgl_verifikasi',
-        'tgl_aktif',
         'diproses_oleh',
     ];
 
      protected $casts = [
         'tgl_submit'     => 'datetime',
         'tgl_verifikasi' => 'datetime',
-        'tgl_aktif'      => 'datetime',
     ];
  
     // ── Generate Nomor Daftar ─────────────────────────────────────────

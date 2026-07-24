@@ -35,9 +35,6 @@ return new class extends Migration
                 'ditolak',   // dokumen tidak valid, perlu upload ulang
             ])->default('menunggu');
 
-            // Catatan admin jika dokumen ditolak
-            $table->string('catatan', 200)->nullable();
-
             $table->timestamp('uploaded_at')->nullable();
 
             $table->timestamps();

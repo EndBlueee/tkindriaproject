@@ -20,9 +20,6 @@ return new class extends Migration
             // Hanya 1 tahun ajaran yang boleh aktif
             $table->enum('status', ['aktif', 'nonaktif'])->default('nonaktif');
  
-            // Batas akhir pembayaran untuk semua gelombang
-            $table->date('batas_akhir_pembayaran')->nullable();
- 
             // Jumlah maksimal termin cicilan
             $table->tinyInteger('maks_termin')->default(3);
             

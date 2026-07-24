@@ -17,7 +17,6 @@ class Dokumen extends Model
         'tipe_file',
         'ukuran_file',
         'status_verifikasi',
-        'catatan',
         'uploaded_at',
     ];
  

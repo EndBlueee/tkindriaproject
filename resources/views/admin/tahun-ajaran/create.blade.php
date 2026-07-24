@@ -36,21 +36,6 @@
             </div>
         </div>
 
-        {{-- Batas Akhir Pembayaran --}}
-        <div class="mb-5 flex items-center">
-            <label for="batas_akhir_pembayaran" class="w-1/3 text-sm font-semibold text-gray-700">
-                Batas Akhir Pembayaran <span class="text-red-500">*</span>
-            </label>
-            <div class="w-full">
-                <input type="date" name="batas_akhir_pembayaran" id="batas_akhir_pembayaran"
-                    value="{{ old('batas_akhir_pembayaran') }}"
-                    class="w-full border {{ $errors->has('batas_akhir_pembayaran') ? 'border-red-400 bg-red-50' : 'border-gray-300' }} rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                @error('batas_akhir_pembayaran')
-                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-        </div>
-
         {{-- Maks Termin --}}
         <div class="mb-6 flex items-center">
             <label for="maks_termin" class="w-1/3 text-sm font-semibold text-gray-700">

@@ -54,6 +54,6 @@ class User extends Authenticatable
     // Satu user bisa punya banyak pendaftaran (meski umumnya 1 per tahun ajaran)
      public function pendaftaran()
      {
-         return $this->hasMany(Pendaftaran::class, 'user_id');
+         return $this->hasOne(Pendaftaran::class, 'user_id');
      }
 }

@@ -7,6 +7,7 @@ use App\Models\Pembayaran;
 use App\Models\Pendaftaran;
 use App\Models\TahunAjaran;
 use App\Services\MidtransService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -68,6 +69,41 @@ class OrangTuaPembayaranController extends Controller
                 'sudahAdaTagihan' => false,
                 'semuaLunas'  => false,
             ]);
+        }
+
+        // LOGIKA BARU: Cek batas pembayaran gelombang dan alihkan jika perlu
+        if (in_array($pendaftaran->status, ['menunggu_pembayaran', 'cicilan_berjalan']) && $pendaftaran->gelombang) {
+            $gelombangSaatIni = $pendaftaran->gelombang;
+
+            // Cek jika batas pembayaran sudah lewat
+            if ($gelombangSaatIni->batas_pembayaran && now()->startOfDay()->isAfter($gelombangSaatIni->batas_pembayaran)) {
+
+                // Cari gelombang berikutnya yang masih aktif
+                $gelombangBerikutnya = $tahunAjaran->gelombang()
+                    ->where('urutan', '>', $gelombangSaatIni->urutan)
+                    ->where('tanggal_tutup', '>=', now())
+                    ->orderBy('urutan')
+                    ->first();
+
+                if ($gelombangBerikutnya) {
+                    DB::transaction(function () use ($pendaftaran, $gelombangBerikutnya) {
+                        // Hapus SEMUA tagihan lama, termasuk yang sudah lunas sebagian (cicilan)
+                        $pendaftaran->pembayaran()->delete();
+                        // Update pendaftaran ke gelombang baru
+                        $pendaftaran->update([
+                            'gelombang_id' => $gelombangBerikutnya->id,
+                            'status' => 'menunggu_pembayaran' // Reset status ke awal
+                        ]);
+                    });
+
+                    return redirect()->route('orangtua.pembayaran.index')
+                        ->with('warning', 'Batas pembayaran untuk ' . $gelombangSaatIni->nama . ' telah berakhir. Anda dialihkan ke ' . $gelombangBerikutnya->nama . ' dengan batas pembayaran baru pada tanggal ' . $gelombangBerikutnya->batas_pembayaran->isoFormat('D MMMM Y') . '.');
+                } else {
+                    // Tidak ada gelombang berikutnya, berarti pendaftaran sudah ditutup total
+                    return redirect()->route('orangtua.dashboard.index')
+                        ->with('error', 'Mohon maaf, periode pendaftaran dan pembayaran untuk Tahun Ajaran ini telah berakhir.');
+                }
+            }
         }
 
         $gelombang       = $pendaftaran->gelombang;

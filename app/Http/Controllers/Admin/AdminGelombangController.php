@@ -37,6 +37,7 @@ class AdminGelombangController extends Controller
             'nama'            => 'required|string|max:50',
             'tanggal_buka'    => 'required|date',
             'tanggal_tutup'   => 'required|date|after:tanggal_buka',
+            'batas_pembayaran' => 'required|date|after_or_equal:tanggal_tutup',
             'diskon_persen'   => 'required|integer|min:0|max:100',
         ], [
             'tahun_ajaran_id.required' => 'Tahun ajaran wajib dipilih.',
@@ -44,6 +45,8 @@ class AdminGelombangController extends Controller
             'tanggal_buka.required'    => 'Tanggal buka wajib diisi.',
             'tanggal_tutup.required'   => 'Tanggal tutup wajib diisi.',
             'tanggal_tutup.after'      => 'Tanggal tutup harus setelah tanggal buka.',
+            'batas_pembayaran.required' => 'Batas pembayaran wajib diisi.',
+            'batas_pembayaran.after_or_equal' => 'Batas pembayaran harus setelah atau sama dengan tanggal tutup.',
             'diskon_persen.required'   => 'Diskon wajib diisi.',
         ]);
 
@@ -55,6 +58,7 @@ class AdminGelombangController extends Controller
             'nama'            => $request->nama,
             'tanggal_buka'    => $request->tanggal_buka,
             'tanggal_tutup'   => $request->tanggal_tutup,
+            'batas_pembayaran' => $request->batas_pembayaran,
             'diskon_persen'   => $request->diskon_persen,
             'urutan'          => $urutan,
         ]);
@@ -79,12 +83,15 @@ class AdminGelombangController extends Controller
             'nama'          => 'required|string|max:50',
             'tanggal_buka'  => 'required|date',
             'tanggal_tutup' => 'required|date|after:tanggal_buka',
+            'batas_pembayaran' => 'required|date|after_or_equal:tanggal_tutup',
             'diskon_persen' => 'required|integer|min:0|max:100',
         ], [
             'nama.required'          => 'Nama gelombang wajib diisi.',
             'tanggal_buka.required'  => 'Tanggal buka wajib diisi.',
             'tanggal_tutup.required' => 'Tanggal tutup wajib diisi.',
             'tanggal_tutup.after'    => 'Tanggal tutup harus setelah tanggal buka.',
+            'batas_pembayaran.required' => 'Batas pembayaran wajib diisi.',
+            'batas_pembayaran.after_or_equal' => 'Batas pembayaran harus setelah atau sama dengan tanggal tutup.',
             'diskon_persen.required' => 'Diskon wajib diisi.',
         ]);
 
@@ -92,6 +99,7 @@ class AdminGelombangController extends Controller
             'nama'          => $request->nama,
             'tanggal_buka'  => $request->tanggal_buka,
             'tanggal_tutup' => $request->tanggal_tutup,
+            'batas_pembayaran' => $request->batas_pembayaran,
             'diskon_persen' => $request->diskon_persen,
         ]);
  

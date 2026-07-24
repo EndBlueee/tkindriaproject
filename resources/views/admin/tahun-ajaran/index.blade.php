@@ -20,7 +20,6 @@
             <tr>
                 <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase">Tahun Ajaran</th>
                 <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase">Status</th>
-                <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase">Batas Akhir Pembayaran</th>
                 <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase">Maks. Cicilan</th>
                 <th class="text-left px-4 py-3 text-white text-xs font-semibold uppercase">Gelombang</th>
                 <th class="text-center px-4 py-3 text-white text-xs font-semibold uppercase">Aksi</th>
@@ -36,7 +35,6 @@
                         {{ $ta->status === 'aktif' ? 'Aktif' : 'Nonaktif' }}
                     </span>
                 </td>
-                <td class="px-4 py-3 text-gray-600">{{ $ta->batas_akhir_pembayaran->translatedFormat('d F Y') }}</td>
                 <td class="px-4 py-3 text-gray-600">{{ $ta->maks_termin }}x</td>
                 <td class="px-4 py-3 text-gray-600">{{ $ta->gelombang->count() }} gelombang</td>
                 <td class="px-4 py-3">

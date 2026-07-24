@@ -23,6 +23,9 @@ return new class extends Migration
  
             $table->date('tanggal_buka');
             $table->date('tanggal_tutup');
+
+            // Batas pembayaran untuk gelombang ini
+            $table->date('batas_pembayaran')->nullable();
  
             // Diskon dalam persen untuk early bird
             // Contoh: 10 = diskon 10%, 0 = tidak ada diskon

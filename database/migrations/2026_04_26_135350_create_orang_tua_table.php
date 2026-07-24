@@ -28,10 +28,6 @@ return new class extends Migration
             $table->string('nama_ibu', 100)->nullable();
             $table->string('pekerjaan_ibu', 50)->nullable();
  
-            // Data Wali (jika bukan diasuh orang tua kandung)
-            $table->string('nama_wali', 100)->nullable();
-            $table->string('hubungan_wali', 50)->nullable();
- 
             // Kontak — minimal 1 nomor HP wajib diisi
             $table->string('nomor_hp', 15);
 

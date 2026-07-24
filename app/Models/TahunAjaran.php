@@ -11,12 +11,10 @@ class TahunAjaran extends Model
     protected $fillable = [
         'nama',
         'status',
-        'batas_akhir_pembayaran',
         'maks_termin',
     ];
  
     protected $casts = [
-        'batas_akhir_pembayaran' => 'date',
     ];
 
     // ── Scope ─────────────────────────────────────────────────────────

@@ -13,6 +13,7 @@ class Gelombang extends Model
         'nama',
         'tanggal_buka',
         'tanggal_tutup',
+        'batas_pembayaran',
         'diskon_persen',
         'urutan',
     ];
@@ -20,6 +21,7 @@ class Gelombang extends Model
     protected $casts = [
         'tanggal_buka'  => 'date',
         'tanggal_tutup' => 'date',
+        'batas_pembayaran' => 'date',
         'diskon_persen' => 'integer',
     ];
  

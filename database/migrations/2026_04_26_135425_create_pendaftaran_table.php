@@ -58,7 +58,6 @@ return new class extends Migration
             // Timestamp proses
             $table->timestamp('tgl_submit')->nullable();       // saat submit final
             $table->timestamp('tgl_verifikasi')->nullable();   // saat admin verifikasi
-            $table->timestamp('tgl_aktif')->nullable();        // saat status jadi aktif
 
             // Admin yang memproses
             $table->foreignId('diproses_oleh')

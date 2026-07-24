@@ -6,15 +6,15 @@
     <title>Daftar Akun — PMB TK Indria</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen flex flex-col md:flex-row md:h-screen">
+<body class="min-h-screen flex flex-col md:flex-row md:h-screen font-inter">
 
     {{-- Kolom Kiri: ilustrasi --}}
-    <div class="hidden md:block md:w-3/4 overflow-hidden">
-        <img src="{{ asset('images/gambar2.png') }}" alt="Ilustrasi Register" class="w-full h-full object-cover">
+    <div class="hidden md:block md:w-7/12 overflow-hidden p-16">
+        <img src="{{ asset('images/gambar2.png') }}" alt="Ilustrasi Register" class="w-full h-full object-cover rounded-xl">
     </div>
 
     {{-- Kolom Kanan: form register --}}
-    <div class="w-full md:w-3/5 bg-white flex items-center justify-center overflow-y-auto">
+    <div class="w-full md:w-5/12 bg-white flex items-center justify-center overflow-y-auto">
         <div class="w-full max-w-md px-8 py-8">
 
             {{-- Logo & Judul --}}

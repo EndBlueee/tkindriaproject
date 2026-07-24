@@ -50,9 +50,6 @@ return new class extends Migration
             // Order ID unik yang kita buat untuk Midtrans
             $table->string('order_id', 100)->nullable()->unique();
  
-            // Snap token dari Midtrans — untuk tampilkan popup pembayaran
-            $table->string('snap_token', 255)->nullable();
- 
             // Transaction ID dari Midtrans — setelah pembayaran berhasil
             $table->string('trx_id', 100)->nullable();
  

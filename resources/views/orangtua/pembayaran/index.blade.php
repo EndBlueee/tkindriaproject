@@ -15,6 +15,11 @@
         {{ session('error') }}
     </div>
     @endif
+    @if (session('warning'))
+    <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-sm text-sm">
+        {{ session('warning') }}
+    </div>
+    @endif
     @if (session('success'))
     <div class="mb-4 p-4 bg-green-50 border border-green-200 text-green-700 rounded-sm text-sm">
         {{ session('success') }}
@@ -221,15 +226,18 @@
 
                 </div>
 
-                {{-- Batas Akhir --}}
-                <div class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-sm">
-                    <p class="text-xs text-yellow-700">
-                        ⏰ Batas akhir pembayaran:
+                {{-- Batas Pembayaran Gelombang --}}
+                @if ($gelombang?->batas_pembayaran)
+                <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-sm">
+                    <p class="text-xs text-blue-700">
+                        <span class="font-semibold">Info:</span>
+                        Batas pembayaran untuk <strong>{{ $gelombang->nama }}</strong> adalah
                         <span class="font-semibold">
-                            {{ $tahunAjaran->batas_akhir_pembayaran->translatedFormat('d F Y') }}
+                            {{ $gelombang->batas_pembayaran->translatedFormat('d F Y') }}
                         </span>
                     </p>
                 </div>
+                @endif
 
                 <button type="submit"
                     class="w-full bg-[#0068C4] hover:bg-blue-700 text-white font-bold py-3 rounded-sm transition text-sm">

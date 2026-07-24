@@ -32,10 +32,14 @@ class AdminPersyaratanDokumenController extends Controller
      // ── Simpan Persyaratan Baru ───────────────────────────────────────
     public function store(Request $request)
     {
+        if ($request->has('format_file')) {
+            $request->merge(['format_file' => strtolower(str_replace(' ', '', $request->format_file))]);
+        }
+
         $request->validate([
             'tahun_ajaran_id' => 'required|exists:tahun_ajaran,id',
             'nama_dokumen'    => 'required|string|max:100',
-            'format_file'     => 'required|string|max:50',
+            'format_file'     => ['required', 'string', 'max:50', 'regex:/^(pdf|jpg|png)(,(pdf|jpg|png))*$/'],
             'maks_ukuran_kb'  => 'required|integer|min:100',
             'is_wajib'        => 'required|in:1,0',
             'keterangan'      => 'nullable|string|max:200',
@@ -43,6 +47,7 @@ class AdminPersyaratanDokumenController extends Controller
             'tahun_ajaran_id.required' => 'Tahun ajaran wajib dipilih.',
             'nama_dokumen.required'    => 'Nama dokumen wajib diisi.',
             'format_file.required'     => 'Format file wajib diisi.',
+            'format_file.regex'        => 'Format file tidak valid. Hanya ekstensi pdf, jpg, dan png yang diizinkan.',
             'maks_ukuran_kb.required'  => 'Maksimal ukuran file wajib diisi.',
             'maks_ukuran_kb.min'       => 'Ukuran minimal 100 KB.',
             'is_wajib.required'        => 'Status wajib harus dipilih.',
@@ -73,15 +78,20 @@ class AdminPersyaratanDokumenController extends Controller
     // ── Update Persyaratan ────────────────────────────────────────────
     public function update(Request $request, PersyaratanDokumen $persyaratanDokumen)
     {
+        if ($request->has('format_file')) {
+            $request->merge(['format_file' => strtolower(str_replace(' ', '', $request->format_file))]);
+        }
+
         $request->validate([
             'nama_dokumen'   => 'required|string|max:100',
-            'format_file'    => 'required|string|max:50',
+            'format_file'     => ['required', 'string', 'max:50', 'regex:/^(pdf|jpg|png)(,(pdf|jpg|png))*$/'],
             'maks_ukuran_kb' => 'required|integer|min:100',
             'is_wajib'       => 'required|in:1,0',
             'keterangan'     => 'nullable|string|max:200',
         ], [
             'nama_dokumen.required'   => 'Nama dokumen wajib diisi.',
             'format_file.required'    => 'Format file wajib diisi.',
+            'format_file.regex'       => 'Format file tidak valid. Hanya ekstensi pdf, jpg, dan png yang diizinkan.',
             'maks_ukuran_kb.required' => 'Maksimal ukuran file wajib diisi.',
             'maks_ukuran_kb.min'      => 'Ukuran minimal 100 KB.',
             'is_wajib.required'       => 'Status wajib harus dipilih.',

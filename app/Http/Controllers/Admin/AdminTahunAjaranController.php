@@ -28,20 +28,17 @@ class AdminTahunAjaranController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama'                   => 'required|string|max:20|unique:tahun_ajaran,nama',
-            'batas_akhir_pembayaran' => 'required|date',
-            'maks_termin'            => 'required|integer|min:1|max:3',
+            'nama'        => 'required|string|max:20|unique:tahun_ajaran,nama',
+            'maks_termin' => 'required|integer|min:1|max:4',
         ], [
-            'nama.required'                   => 'Nama tahun ajaran wajib diisi.',
-            'nama.unique'                     => 'Tahun ajaran ini sudah ada.',
-            'batas_akhir_pembayaran.required' => 'Batas akhir pembayaran wajib diisi.',
-            'maks_termin.required'            => 'Maksimal termin wajib diisi.',
+            'nama.required'        => 'Nama tahun ajaran wajib diisi.',
+            'nama.unique'          => 'Tahun ajaran ini sudah ada.',
+            'maks_termin.required' => 'Maksimal termin wajib diisi.',
         ]);
 
         TahunAjaran::create([
             'nama'                   => $request->nama,
             'status'                 => 'nonaktif',
-            'batas_akhir_pembayaran' => $request->batas_akhir_pembayaran,
             'maks_termin'            => $request->maks_termin,
         ]);
 
@@ -59,15 +56,12 @@ class AdminTahunAjaranController extends Controller
     public function update(Request $request, TahunAjaran $tahunAjaran)
     {
         $request->validate([
-            'batas_akhir_pembayaran' => 'required|date',
-            'maks_termin'            => 'required|integer|min:1|max:4',
+            'maks_termin' => 'required|integer|min:1|max:4',
         ], [
-            'batas_akhir_pembayaran.required' => 'Batas akhir pembayaran wajib diisi.',
-            'maks_termin.required'            => 'Maksimal termin wajib diisi.',
+            'maks_termin.required' => 'Maksimal termin wajib diisi.',
         ]);
 
         $tahunAjaran->update([
-            'batas_akhir_pembayaran' => $request->batas_akhir_pembayaran,
             'maks_termin'            => $request->maks_termin,
         ]);
 
@@ -83,9 +77,16 @@ class AdminTahunAjaranController extends Controller
             return back()->with('error', 'Tahun ajaran yang sedang aktif tidak dapat dihapus.');
         }
 
-         if ($tahunAjaran->pendaftarans()->exists()) {
-             return back()->with('error', 'Tidak dapat dihapus karena sudah ada data pendaftaran.');
-         }
+        if ($tahunAjaran->pendaftaran()->exists()) {
+            return back()->with('error', 'Tidak dapat dihapus karena sudah ada data pendaftaran.');
+        }
+
+        if ($tahunAjaran->gelombang()->exists()) {
+            return back()->with(
+                'error',
+                'Tidak dapat dihapus karena sudah memiliki data gelombang.'
+            );
+        }
 
         $nama = $tahunAjaran->nama;
         $tahunAjaran->delete();

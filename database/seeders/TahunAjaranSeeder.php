@@ -19,7 +19,6 @@ class TahunAjaranSeeder extends Seeder
         $tahunAjaran = TahunAjaran::create([
             'nama'                   => '2026/2027',
             'status'                 => 'aktif',
-            'batas_akhir_pembayaran' => '2026-08-31',
             'maks_termin'            => 4,
         ]);
  
@@ -62,6 +61,7 @@ class TahunAjaranSeeder extends Seeder
                 'nama'          => 'Gelombang 1',
                 'tanggal_buka'  => '2026-01-01',
                 'tanggal_tutup' => '2026-03-31',
+                'batas_pembayaran' => '2026-04-07', // Batas bayar 7 hari setelah gelombang tutup
                 'diskon_persen' => 10, // early bird
                 'urutan'        => 1,
             ],
@@ -69,6 +69,7 @@ class TahunAjaranSeeder extends Seeder
                 'nama'          => 'Gelombang 2',
                 'tanggal_buka'  => '2026-04-01',
                 'tanggal_tutup' => '2026-06-30',
+                'batas_pembayaran' => '2026-07-07',
                 'diskon_persen' => 0,
                 'urutan'        => 2,
             ],
@@ -76,6 +77,7 @@ class TahunAjaranSeeder extends Seeder
                 'nama'          => 'Gelombang 3',
                 'tanggal_buka'  => '2026-07-01',
                 'tanggal_tutup' => '2026-08-31',
+                'batas_pembayaran' => '2026-09-07',
                 'diskon_persen' => 0,
                 'urutan'        => 3,
             ],

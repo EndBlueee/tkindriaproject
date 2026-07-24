@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TahunAjaran;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,16 @@ class AuthController extends Controller
             return $this->redirectByRole();
         }
 
-        return view('auth.login');
+        // Ambil tahun ajaran yang aktif
+        $tahunAjaran = TahunAjaran::aktif();
+
+        // Ambil data gelombang dari tahun ajaran tersebut, diurutkan berdasarkan tanggal buka
+        $gelombangs = $tahunAjaran ? $tahunAjaran->gelombang()->orderBy('tanggal_buka')->get() : collect();
+
+        // Kirim data ke view
+        return view('auth.login', [
+            'gelombangs' => $gelombangs
+        ]);
     }
 
     // ── Proses Login ──────────────────────────────────────────────────
