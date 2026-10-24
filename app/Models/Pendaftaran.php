@@ -73,20 +73,7 @@ class Pendaftaran extends Model
         };
     }
  
-    // ── Helper Pembayaran ─────────────────────────────────────────────
-    // ⏳ Dibuka saat model Pembayaran sudah dibuat
- 
-    // public function totalTerbayar(): int
-    // {
-    //     return $this->pembayaran()->where('status', 'lunas')->sum('nominal');
-    // }
- 
-    // public function sudahLunas(): bool
-    // {
-    //     $total = $this->pembayaran()->count();
-    //     $lunas = $this->pembayaran()->where('status', 'lunas')->count();
-    //     return $total > 0 && $total === $lunas;
-    // }
+   
  
     // ── Relasi ────────────────────────────────────────────────────────
  

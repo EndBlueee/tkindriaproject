@@ -51,7 +51,7 @@
                         class="flex items-center px-4 py-3 rounded-md transition-colors
                         {{ request()->routeIs('orangtua.pembayaran.*') ? 'bg-white text-[#0068C4] font-semibold' : 'text-white hover:bg-white hover:text-[#0068C4]' }}">
                         <x-heroicon-o-credit-card class="w-6 h-6" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
                         </svg>
                         <span class="ml-2">Pembayaran</span>
                     </a>
@@ -94,6 +94,136 @@
                 </div>
             </div>
 
+            @php
+            $daftarAnak = Auth::user()->calonMurid;
+            $sedangTambahAnak = session('adding_new_child', false);
+            $anakAktif = null;
+
+            if (! $sedangTambahAnak) {
+            $anakAktif = $daftarAnak->firstWhere('id', session('active_calon_murid_id'));
+
+            if (! $anakAktif && $daftarAnak->isNotEmpty()) {
+            $anakAktif = $daftarAnak->first();
+            }
+            }
+            @endphp
+
+            <div class="flex items-center gap-2">
+
+                {{-- =========================================================
+         PILIH ANAK
+    ========================================================== --}}
+                @if ($daftarAnak->isNotEmpty() || $sedangTambahAnak)
+                <details class="relative group">
+
+                    {{-- Trigger --}}
+                    <summary class="flex items-center gap-2.5 px-3 py-2 bg-white border border-gray-200 rounded-xl cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 list-none [&::-webkit-details-marker]:hidden">
+                        {{-- Icon --}}
+                        <div class="flex items-center justify-center shrink-0 w-8 h-8 rounded-lg bg-blue-50">
+                            @if ($sedangTambahAnak)
+                            <x-heroicon-o-user-plus class="w-4 h-4 text-[#0068C4]" />
+                            @else
+                            <x-heroicon-o-user class="w-4 h-4 text-[#0068C4]" />
+                            @endif
+                        </div>
+
+                        {{-- Nama Anak --}}
+                        <div class="hidden min-w-0 text-left leading-tight sm:block">
+                            <p class="text-[11px] font-medium text-gray-400">Anak</p>
+                            <p class="text-sm font-semibold text-gray-700 truncate max-w-[130px]">
+                                @if ($sedangTambahAnak)
+                                Anak Baru
+                                @else
+                                {{ $anakAktif?->nama_lengkap ?? 'Pilih Anak' }}
+                                @endif
+                            </p>
+                        </div>
+
+                        {{-- Chevron --}}
+                        <x-heroicon-o-chevron-down class="w-4 h-4 text-gray-400 transition-transform duration-200 group-open:rotate-180" />
+                    </summary>
+
+                    {{-- Dropdown --}}
+                    <div class="absolute right-0 z-50 overflow-hidden bg-white border border-gray-200 shadow-[0_10px_30px_rgba(0,0,0,0.10)] top-full mt-2 w-72 rounded-2xl">
+
+                        {{-- Header --}}
+                        <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/70">
+                            <p class="text-sm font-semibold text-gray-800">Pilih Anak</p>
+                            <p class="text-xs text-gray-400 mt-0.5">Pilih data anak yang ingin dikelola</p>
+                        </div>
+
+                        {{-- Daftar Anak --}}
+                        @if ($daftarAnak->isNotEmpty())
+                        <div class="p-2">
+                            @foreach ($daftarAnak as $anak)
+                            <form method="POST" action="{{ route('orangtua.anak.switch', $anak) }}">
+                                @csrf
+                                <button type="submit" class="flex items-center w-full gap-3 p-2.5 text-left transition-colors duration-150 rounded-xl {{ (!$sedangTambahAnak && $anakAktif?->id === $anak->id) ? 'bg-blue-50' : 'hover:bg-gray-50' }}">
+
+                                    {{-- Avatar Anak --}}
+                                    <div class="flex items-center justify-center shrink-0 w-9 h-9 rounded-full {{ (!$sedangTambahAnak && $anakAktif?->id === $anak->id) ? 'bg-[#0068C4] text-white' : 'bg-gray-100 text-gray-500' }}">
+                                        <x-heroicon-o-user class="w-4 h-4" />
+                                    </div>
+
+                                    {{-- Informasi Anak --}}
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold truncate {{ (!$sedangTambahAnak && $anakAktif?->id === $anak->id) ? 'text-[#0068C4]' : 'text-gray-700' }}">
+                                            {{ $anak->nama_lengkap ?: 'Belum diisi' }}
+                                        </p>
+
+                                        @if (!$sedangTambahAnak && $anakAktif?->id === $anak->id)
+                                        <p class="text-[11px] text-[#0068C4] mt-0.5">Sedang dipilih</p>
+                                        @else
+                                        <p class="text-[11px] text-gray-400 mt-0.5">Data pendaftaran</p>
+                                        @endif
+                                    </div>
+
+                                    {{-- Check --}}
+                                    @if (!$sedangTambahAnak && $anakAktif?->id === $anak->id)
+                                    <div class="flex items-center justify-center shrink-0 w-6 h-6 rounded-full bg-[#0068C4]">
+                                        <x-heroicon-o-check class="w-3.5 h-3.5 text-white" />
+                                    </div>
+                                    @endif
+                                </button>
+                            </form>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        {{-- Divider --}}
+                        <div class="border-t border-gray-100"></div>
+
+                        {{-- Status Anak Baru --}}
+                        @if ($sedangTambahAnak)
+                        <div class="p-3">
+                            <div class="flex items-center gap-3 p-3 border rounded-xl bg-blue-50 border-blue-100">
+                                <div class="flex items-center justify-center shrink-0 w-9 h-9 bg-white rounded-full">
+                                    <x-heroicon-o-pencil class="w-4 h-4 text-[#0068C4]" />
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-[#0068C4]">Anak Baru</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Silakan isi formulir pendaftaran</p>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                    </div>
+                </details>
+                @endif
+
+                {{-- =========================================================
+         TAMBAH ANAK
+    ========================================================== --}}
+                <form method="POST" action="{{ route('orangtua.anak.tambah') }}">
+                    @csrf
+                    <button type="submit" class="inline-flex items-center gap-2 h-11 px-3.5 text-sm font-semibold text-white whitespace-nowrap transition-all duration-200 shadow-sm rounded-xl bg-[#0068C4] hover:bg-[#0059A8] active:bg-[#004F96]">
+                        <x-heroicon-o-plus class="w-4 h-4" />
+                        <span class="hidden sm:inline">Tambah Anak</span>
+                    </button>
+                </form>
+
+            </div>
             {{-- Profil --}}
             <a href="{{ route('orangtua.profile.index') }}" class="flex items-center space-x-3 md:px-6 hover:opacity-80 transition">
                 <div class="w-9 h-9 bg-[#0068C4] rounded-full flex items-center justify-center text-white text-sm font-bold">
@@ -133,22 +263,22 @@
 
         <nav class="fixed bottom-0 w-full bg-white flex justify-around p-3 md:hidden shadow-[0_-1px_4px_rgba(0,0,0,0.08)]">
             <a href="{{ route('orangtua.dashboard.index') }}"
-               class="flex flex-col items-center {{ request()->routeIs('orangtua.dashboard.index') ? 'text-blue-600' : 'text-gray-400' }}">
+                class="flex flex-col items-center {{ request()->routeIs('orangtua.dashboard.index') ? 'text-blue-600' : 'text-gray-400' }}">
                 <x-heroicon-o-squares-2x2 class="w-6 h-6" />
                 <span class="text-xs mt-1">Beranda</span>
             </a>
             <a href="{{ route('orangtua.pendaftaran.index') }}"
-               class="flex flex-col items-center {{ request()->routeIs('orangtua.pendaftaran.*') ? 'text-blue-600' : 'text-gray-400' }}">
+                class="flex flex-col items-center {{ request()->routeIs('orangtua.pendaftaran.*') ? 'text-blue-600' : 'text-gray-400' }}">
                 <x-heroicon-o-document-text class="w-6 h-6" />
                 <span class="text-xs mt-1">Formulir</span>
             </a>
             <a href="{{ route('orangtua.pembayaran.index') }}"
-               class="flex flex-col items-center {{ request()->routeIs('orangtua.pembayaran.*') ? 'text-blue-600' : 'text-gray-400' }}">
+                class="flex flex-col items-center {{ request()->routeIs('orangtua.pembayaran.*') ? 'text-blue-600' : 'text-gray-400' }}">
                 <x-heroicon-o-credit-card class="w-6 h-6" />
                 <span class="text-xs mt-1">Bayar</span>
             </a>
             <a href="{{ route('orangtua.profile.index') }}"
-               class="flex flex-col items-center {{ request()->routeIs('orangtua.profile.*') ? 'text-blue-600' : 'text-gray-400' }}">
+                class="flex flex-col items-center {{ request()->routeIs('orangtua.profile.*') ? 'text-blue-600' : 'text-gray-400' }}">
                 <x-heroicon-o-user class="w-6 h-6" />
                 <span class="text-xs mt-1">Profil</span>
             </a>

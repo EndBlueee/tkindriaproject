@@ -13,11 +13,11 @@
     <section class="min-h-screen flex flex-col md:flex-row md:h-screen">
 
         {{-- Kolom Kiri: ilustrasi --}}
-        
-            <div class="hidden md:block md:w-7/12 overflow-hidden p-16">
-                <img src="{{ asset('images/gambar2.png') }}" alt="Ilustrasi Login" class="w-full h-full object-cover rounded-xl">
-            </div>
-        
+
+        <div class="hidden md:block md:w-7/12 overflow-hidden p-16">
+            <img src="{{ asset('images/gambar2.png') }}" alt="Ilustrasi Login" class="w-full h-full object-cover rounded-xl">
+        </div>
+
 
         {{-- Kolom Kanan: form login --}}
         <div class="w-full md:w-5/12 bg-white flex items-center justify-center py-10 md:py-0">
@@ -101,6 +101,7 @@
             </div>
         </div>
     </section>
+
     <section class=" flex flex-col items-center justify-center bg-gray-50 px-4 py-16">
         <div class="max-w-4xl w-full">
             <div class="text-center mb-5">
@@ -109,11 +110,28 @@
             <img src="{{ asset('images/gambar4.png') }}" alt="Alur Pendaftaran" class="w-full opacity-90 rounded-xl shadow-lg">
         </div>
     </section>
-    <section class="py-20 bg-white max-w-6xl mx-auto px-4 min-h-screen flex flex-col">
+
+    <section class="py-20 bg-white max-w-6xl mx-auto px-4 flex flex-col">
         <div class="text-center md:mb-0 mb-8">
             <h2 class="text-4xl font-bold">Periode Gelombang Pendaftaran</h2>
             <p class="max-w-xl mx-auto mt-6 text-gray-600">Silakan perhatikan jadwal pendaftaran untuk setiap gelombang. Pastikan Anda mendaftar sesuai dengan waktu yang telah ditentukan.</p>
         </div>
+
+        {{-- Informasi Kuota --}}
+<div class="text-center py-8 px-6 mt-8 border border-blue-100 bg-blue-50 rounded-xl">
+    <p class="text-lg font-semibold text-gray-600">
+        Kuota Penerimaan
+    </p>
+
+    <p class="text-4xl font-bold text-[#0068C4] mt-2">
+        20 Murid
+    </p>
+
+    <p class="text-sm text-gray-500 mt-1">
+        untuk Tahun Ajaran {{ $tahunAjaran->nama ?? '-' }}
+    </p>
+</div>
+
         <div class="grow flex items-center mt-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
                 @forelse ($gelombangs as $gelombang)
@@ -140,6 +158,110 @@
             </div>
         </div>
     </section>
+
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+
+            {{-- Judul --}}
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold text-gray-800">
+                    Persyaratan dan Rincian Biaya
+                </h2>
+
+                <p class="max-w-2xl mx-auto mt-3 text-gray-600">
+                    Berikut informasi persyaratan pendaftaran dan rincian biaya
+                    untuk Tahun Ajaran {{ $tahunAjaran->nama ?? '-' }}.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+
+                {{-- Persyaratan Pendaftaran --}}
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-5">
+                        Persyaratan Pendaftaran
+                    </h3>
+
+                    <ol class="space-y-4 text-gray-700">
+                        {{-- Ketentuan usia --}}
+                        <li class="flex gap-4">
+                            <span class="font-semibold text-gray-800">1.</span>
+                            <span>Usia minimal 4 tahun</span>
+                        </li>
+
+                        {{-- Persyaratan dokumen dari database --}}
+                        @foreach ($persyaratanDokumens as $index => $persyaratan)
+                        <li class="flex gap-4">
+                            <span class="font-semibold text-gray-800">
+                                {{ $index + 2 }}.
+                            </span>
+
+                            <span>
+                                fotokopi {{ $persyaratan->nama_dokumen }}
+                            </span>
+                        </li>
+                        @endforeach
+                    </ol>
+                </div>
+
+
+                {{-- Rincian Biaya --}}
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-5">
+                        Rincian Biaya
+                    </h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse border border-gray-200">
+                            <thead class="bg-[#0068C4] text-white">
+                                <tr>
+                                    <th class="border border-gray-200 px-4 py-3 text-center">
+                                        No
+                                    </th>
+
+                                    <th class="border border-gray-200 px-4 py-3 text-left">
+                                        Rincian Biaya
+                                    </th>
+
+                                    <th class="border border-gray-200 px-4 py-3 text-right">
+                                        Nominal
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @forelse ($rincianBiayas as $index => $biaya)
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="border border-gray-200 px-4 py-3 text-center">
+                                        {{ $index + 1 }}
+                                    </td>
+
+                                    <td class="border border-gray-200 px-4 py-3 text-gray-700">
+                                        {{ $biaya->nama_komponen }}
+                                    </td>
+
+                                    <td class="border border-gray-200 px-4 py-3 text-right font-semibold text-gray-800">
+                                        Rp {{ number_format($biaya->nominal, 0, ',', '.') }}
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="3"
+                                        class="border border-gray-200 px-4 py-8 text-center text-gray-500">
+                                        Belum ada rincian biaya.
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
     <section id="kontak" class="bg-gray-50 py-16 px-4 scroll-mt-16">
         <div class="max-w-4xl mx-auto bg-[#e6eef5] text-white rounded-xl shadow-lg p-8 md:p-15 flex flex-col md:flex-row items-center gap-8 border border-gray-200">
             {{-- Ikon --}}

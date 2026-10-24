@@ -24,9 +24,22 @@ class AuthController extends Controller
         // Ambil data gelombang dari tahun ajaran tersebut, diurutkan berdasarkan tanggal buka
         $gelombangs = $tahunAjaran ? $tahunAjaran->gelombang()->orderBy('tanggal_buka')->get() : collect();
 
+        // Ambil rincian biaya dari tahun ajaran aktif
+        $rincianBiayas = $tahunAjaran
+            ? $tahunAjaran->rincianBiaya()->get()
+            : collect();
+
+        // Ambil persyaratan dokumen dari tahun ajaran aktif
+        $persyaratanDokumens = $tahunAjaran
+            ? $tahunAjaran->persyaratanDokumen()->orderBy('urutan')->get()
+            : collect();
+
         // Kirim data ke view
         return view('auth.login', [
-            'gelombangs' => $gelombangs
+            'tahunAjaran' => $tahunAjaran,
+            'gelombangs' => $gelombangs,
+            'rincianBiayas' => $rincianBiayas,
+            'persyaratanDokumens' => $persyaratanDokumens,
         ]);
     }
 
@@ -67,19 +80,19 @@ class AuthController extends Controller
         ])->withInput($request->only('nomor_hp'));
     }
 
-      // ── Tampil Halaman Register ───────────────────────────────────────
- 
+    // ── Tampil Halaman Register ───────────────────────────────────────
+
     public function showRegister()
     {
         if (Auth::check()) {
             return $this->redirectByRole();
         }
- 
+
         return view('auth.register');
     }
- 
+
     // ── Proses Register ───────────────────────────────────────────────
- 
+
     public function register(Request $request)
     {
         $request->validate([
@@ -94,7 +107,7 @@ class AuthController extends Controller
             'password.min'                   => 'Password minimal 6 karakter.',
             'password.confirmed'             => 'Konfirmasi password tidak cocok.',
         ]);
- 
+
         // Buat akun orang tua
         $user = User::create([
             'nama'     => $request->nama,
@@ -103,8 +116,8 @@ class AuthController extends Controller
             'role'     => 'orangtua',
             'is_aktif' => true,
         ]);
- 
- 
+
+
         return redirect()->route('orangtua.dashboard.index')
             ->with('success', 'Akun berhasil dibuat. Selamat datang, ' . $user->nama . '!');
     }

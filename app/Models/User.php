@@ -44,16 +44,15 @@ class User extends Authenticatable
 
     // ── Relasi ────────────────────────────────────────────────────────
 
-    // Satu user (orangtua) punya satu calon murid/*
+    // Satu user (orangtua) bisa memiliki banyak calon murid
+    public function calonMurid()
+    {
+        return $this->hasMany(CalonMurid::class, 'user_id');
+    }
 
-     public function calonMurid()
-     {
-         return $this->hasOne(CalonMurid::class, 'user_id');
-     }
-
-    // Satu user bisa punya banyak pendaftaran (meski umumnya 1 per tahun ajaran)
-     public function pendaftaran()
-     {
-         return $this->hasOne(Pendaftaran::class, 'user_id');
-     }
+    // Satu user (orangtua) bisa memiliki banyak pendaftaran
+    public function pendaftaran()
+    {
+        return $this->hasMany(Pendaftaran::class, 'user_id');
+    }
 }

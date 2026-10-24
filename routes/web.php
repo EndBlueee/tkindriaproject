@@ -18,6 +18,7 @@ use App\Http\Controllers\OrangTua\OrangTuaDashboardController;
 use App\Http\Controllers\OrangTua\OrangTuaPendaftaranController;
 use App\Http\Controllers\OrangTua\OrangTuaPembayaranController;
 use App\Http\Controllers\OrangTua\OrangTuaProfileController;
+use App\Http\Controllers\OrangTua\OrangTuaAnakController;
 
 // Redirect root ke login
 Route::get('/', fn() => redirect()->route('login'));
@@ -106,7 +107,7 @@ Route::prefix('admin')
             // List semua pembayaran
             Route::get('/', [AdminPembayaranController::class, 'index'])
                 ->name('index');
-                 Route::get('/create', [AdminPembayaranController::class, 'create'])->name('create');
+            Route::get('/create', [AdminPembayaranController::class, 'create'])->name('create');
             Route::post('/', [AdminPembayaranController::class, 'store'])->name('store');
             // Detail pembayaran per pendaftaran
             Route::get('/{pendaftaran}', [AdminPembayaranController::class, 'show'])
@@ -133,10 +134,10 @@ Route::prefix('admin')
         });
 
         // Di dalam group admin
-Route::post('/notifikasi/baca-semua', [AdminNotifikasiController::class, 'bacaSemua'])
-    ->name('notifikasi.baca-semua');
-Route::get('/notifikasi/{notifikasi}/baca', [AdminNotifikasiController::class, 'bacaSatu'])
-    ->name('notifikasi.baca-satu');
+        Route::post('/notifikasi/baca-semua', [AdminNotifikasiController::class, 'bacaSemua'])
+            ->name('notifikasi.baca-semua');
+        Route::get('/notifikasi/{notifikasi}/baca', [AdminNotifikasiController::class, 'bacaSatu'])
+            ->name('notifikasi.baca-satu');
     });
 
 // ── Portal Orang Tua ──────────────────────────────────────────────────
@@ -174,13 +175,20 @@ Route::prefix('pendaftar')
             Route::get('/{pembayaran}/selesai', [OrangTuaPembayaranController::class, 'selesai'])->name('selesai');
         });
 
+        // ── Manajemen Anak ────────────────────────────────────────────────
+
+        Route::post('/anak/{calonMurid}/switch', [OrangTuaAnakController::class, 'switch'])
+            ->name('anak.switch');
+
+        Route::post('/anak/tambah', [OrangTuaAnakController::class, 'tambah'])
+            ->name('anak.tambah');
+
         // ── Profil ────────────────────────────────────────────────────
         Route::get('/profile', [OrangTuaProfileController::class, 'index'])->name('profile.index');
         Route::put('/profile', [OrangTuaProfileController::class, 'update'])->name('profile.update');
-
     });
 
-    // ── Webhook Midtrans ──────────────────────────────────────────────────
+// ── Webhook Midtrans ──────────────────────────────────────────────────
 // Tidak pakai middleware auth — Midtrans kirim notifikasi dari server mereka
 Route::post('/midtrans/notifikasi', [MidtransController::class, 'notifikasi'])
     ->name('midtrans.notifikasi');
